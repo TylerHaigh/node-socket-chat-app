@@ -1,12 +1,11 @@
-const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
 
 const {generateMessage} = require('./utils/message');
+const {paths} = require('./paths');
 
-const publicPath = path.join(__dirname, '/../public');
 const port = process.env.PORT || 3000;
 
 var app = express();
@@ -16,7 +15,9 @@ var io = socketIO(server);
 
 // Middleware
 
-app.use(express.static(publicPath));
+app.use('/jquery', express.static(paths.jqueryFolder)); // https://stackoverflow.com/a/29537014/2442468
+app.use(express.static(paths.publicPath));
+
 
 
 io.on('connection', (socket) => {
@@ -25,8 +26,11 @@ io.on('connection', (socket) => {
     socket.emit('newMessage', generateMessage('Server', 'Welcome to the chat app'));
     socket.broadcast.emit('newMessage', generateMessage('Server', 'New user joined'));
 
-    socket.on('createMessage', (message) => {
-        socket.broadcast.emit('newMessage', generateMessage(message.from, message.text));
+    socket.on('createMessage', (message, callback) => {
+        io.emit('newMessage', generateMessage(message.from, message.text));
+        //socket.broadcast.emit('newMessage', generateMessage(message.from, message.text));
+
+        callback('This is from the server');
     });
 
     socket.on('disconnect', () => {
