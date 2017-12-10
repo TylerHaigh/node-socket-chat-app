@@ -8,7 +8,7 @@ var app = express();
 
 // Middleware
 
-app.use(express.status(publicPath));
+app.use(express.static(publicPath));
 
 // Routes
 
