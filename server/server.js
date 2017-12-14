@@ -5,6 +5,7 @@ const socketIO = require('socket.io');
 
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const {paths} = require('./paths');
+const {isRealString} = require('./utils/validation');
 
 const port = process.env.PORT || 3000;
 
@@ -18,6 +19,7 @@ var io = socketIO(server);
 app.use('/jquery', express.static(paths.jqueryFolder)); // https://stackoverflow.com/a/29537014/2442468
 app.use('/moment', express.static(paths.momentFolder));
 app.use('/mustache', express.static(paths.mustacheFolder));
+app.use('/deparam', express.static(paths.deparamFolder));
 app.use(express.static(paths.publicPath));
 
 
@@ -25,8 +27,19 @@ app.use(express.static(paths.publicPath));
 io.on('connection', (socket) => {
     console.log('New user connected');
 
-    socket.emit('newMessage', generateMessage('Server', 'Welcome to the chat app'));
-    socket.broadcast.emit('newMessage', generateMessage('Server', 'New user joined'));
+    
+
+    socket.on('join', (params, callback) => {
+        if(!isRealString(params.name) || !isRealString(params.room))
+            callback('Room and name must be provided');
+        
+        socket.join(params.room);
+
+        socket.emit('newMessage', generateMessage('Server', 'Welcome to the chat app'));
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage(`Server ${params.room}`, `${params.name} joined`));
+
+        callback();
+    });
 
     socket.on('createMessage', (message, callback) => {
         io.emit('newMessage', generateMessage(message.from, message.text));
