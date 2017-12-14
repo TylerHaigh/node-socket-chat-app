@@ -9,11 +9,13 @@ makePath = (folder) => {
 const publicPath   = makePath('public');
 const jqueryFolder = makePath('node_modules/jquery/dist/');
 const momentFolder = makePath('node_modules/moment/');
+const mustacheFolder = makePath('node_modules/mustache/');
 
 module.exports = {
     paths: {
         publicPath,
         jqueryFolder,
-        momentFolder
+        momentFolder,
+        mustacheFolder
     }
 };
