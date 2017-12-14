@@ -8,10 +8,12 @@ makePath = (folder) => {
 
 const publicPath   = makePath('public');
 const jqueryFolder = makePath('node_modules/jquery/dist/');
+const momentFolder = makePath('node_modules/moment/');
 
 module.exports = {
     paths: {
         publicPath,
-        jqueryFolder
+        jqueryFolder,
+        momentFolder
     }
 };

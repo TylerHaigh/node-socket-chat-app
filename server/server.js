@@ -16,6 +16,7 @@ var io = socketIO(server);
 // Middleware
 
 app.use('/jquery', express.static(paths.jqueryFolder)); // https://stackoverflow.com/a/29537014/2442468
+app.use('/moment', express.static(paths.momentFolder));
 app.use(express.static(paths.publicPath));
 
 
