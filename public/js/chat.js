@@ -30,12 +30,26 @@ socket.on('connect', function () {
         } else {
             console.log('Connected to server');
         }
-    })
+    });
 
 });
 
 socket.on('disconnect', function () {
     console.log('Disconnected from server');
+});
+
+
+
+socket.on('updateUserList', function(users) {
+    console.log('User List: ', users);
+
+    var ul = jQuery('<ol></ol>');
+    users.forEach( function(username) {
+        ul.append(jQuery('<li></li>').text(username));
+    });
+
+    jQuery('#users').html(ul);
+
 });
 
 // socket.emit('createMessage', {
@@ -79,7 +93,6 @@ jQuery('#message-form').on('submit', function (e) {
     e.preventDefault();
 
     var textbox = jQuery('[name=message');
-
 
     socket.emit('createMessage', {
         from: 'User',
